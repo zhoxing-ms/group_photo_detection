@@ -42,9 +42,6 @@ def inference(img: Image, draw_detect_enabled, detect_threshold, sim_threshold) 
         draw_faces(img, faces)
     return img, get_row_names_text(row_names)
 
-inference(Image.open('./aqgy.jpg'), False, 0.5, 0.3)
-
-# examples = [os.path.join(os.path.dirname(__file__), 'images', img) for img in ['aqgy.jpg', 'aqgy2.jpg']]
 examples = ['./example.jpg']
 
 with gr.Blocks() as demo:

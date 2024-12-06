@@ -14,11 +14,11 @@ def load_face_bank(face_folder, face_recognizer, use_cache=True):
     img_paths = glob.glob(os.path.join(face_folder, '**/**.**'))
     # 遍历已知人脸图片
     for img_path in img_paths:
-        _, ext = os.path.splitext(img_path)
+        dirStr, ext = os.path.splitext(img_path)
         if ext not in ['.jpg', '.jpeg', '.png']:
             continue
         # 获取人名
-        name = os.path.basename(os.path.dirname(img_path))
+        name = dirStr.split(os.sep)[-1]
         img = Image.open(img_path)
         img = img.convert('RGB')
         embeddings = face_recognizer(img)['img_embedding']
