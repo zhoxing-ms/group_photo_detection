@@ -15,7 +15,7 @@ face_bank = load_face_bank('face_bank/', face_recognizer)
 
 def inference(img: Image, draw_detect_enabled, detect_threshold, sim_threshold) -> json:
     img = resize_img(img)
-    img = img.convert('RGB') 
+    img = img.convert('RGB')
     detection_result = face_detector(img)
 
     boxes = np.array(detection_result[OutputKeys.BOXES])
@@ -42,7 +42,7 @@ def inference(img: Image, draw_detect_enabled, detect_threshold, sim_threshold) 
         draw_faces(img, faces)
     return img, get_row_names_text(row_names)
 
-examples = ['./example.jpg']
+examples = ['example.jpg']
 
 with gr.Blocks() as demo:
     with gr.Row():
@@ -62,4 +62,4 @@ with gr.Blocks() as demo:
         outputs=[img_output, name_output])
     gr.Examples(examples, inputs=[img_input])
 
-demo.launch()
+# demo.launch()
