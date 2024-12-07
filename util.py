@@ -88,7 +88,7 @@ def get_rows(faces):
     ys = [(box[1] + box[3])//2 for box in boxes]
     # 使用y坐标作为距离度量值
     data = np.expand_dims(np.array(ys), axis=1)
-    dbscan = DBSCAN(eps=mean_h*1.2, min_samples=1)
+    dbscan = DBSCAN(eps=mean_h*0.3, min_samples=1)
     # 获取到每个度量值对应的类别
     labels = dbscan.fit_predict(data)
     rows = []
@@ -158,4 +158,4 @@ def resize_img(img):
         return img
     w_new = int(img.width / ratio)
     h_new = int(img.height / ratio)
-    return img.resize((w_new, h_new), resample=Image.BILINEAR)   
+    return img.resize((w_new, h_new), resample=Image.BILINEAR)
