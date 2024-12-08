@@ -71,12 +71,12 @@ def draw_face(img_draw, face, font):
     box = face['box']
     name = face['name']
     sim = face['sim']
-    
-    # img_draw.text((box[0], box[1]-30), name, fill=(0, 0, 255), font=font)
+
+    img_draw.text((box[0]-10, box[1]-20), name, fill=(0, 0, 255), font=font)
     img_draw.rectangle([box[0], box[1], box[2], box[3]], outline ='red') 
 
 def draw_faces(image, faces):
-    font = ImageFont.truetype("Microsoft YaHei UI Bold.ttf", 20, encoding="unic")
+    font = ImageFont.truetype("Microsoft YaHei UI Bold.ttf", 10, encoding="unic")
     draw = ImageDraw.Draw(image)
     for face in faces:
         draw_face(draw, face, font)
@@ -88,7 +88,7 @@ def get_rows(faces):
     ys = [(box[1] + box[3])//2 for box in boxes]
     # 使用y坐标作为距离度量值
     data = np.expand_dims(np.array(ys), axis=1)
-    dbscan = DBSCAN(eps=mean_h*0.3, min_samples=1)
+    dbscan = DBSCAN(eps=mean_h*0.395, min_samples=5)
     # 获取到每个度量值对应的类别
     labels = dbscan.fit_predict(data)
     rows = []
@@ -109,10 +109,10 @@ def get_rows(faces):
     return [row[1] for row in rows]
 
 def draw_name(img, row_names):
-    line_space = 40
-    bottom_shift = 120
+    line_space = 10
+    bottom_shift = 50
     # 使用中文字体
-    font = ImageFont.truetype("Microsoft YaHei UI Bold.ttf", 30, encoding="unic")
+    font = ImageFont.truetype("Microsoft YaHei UI Bold.ttf", 10, encoding="unic")
     draw = ImageDraw.Draw(img)
     height_count = 0
     for row_name in row_names:

@@ -17,6 +17,11 @@ models: #关联模型
 ## 启动文件(若SDK为Gradio/Streamlit，默认为app.py, 若为Static HTML, 默认为index.html)
 # deployspec:
 #   entry_file: app.py
+
+## 在model-scope里的PAI-DSW里启动
+# 1. 运行setup.sh
+# 2. 运行run_demo.ipynb
+
 license: Apache License 2.0
 ---
 ```
