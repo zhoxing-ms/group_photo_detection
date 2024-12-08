@@ -46,8 +46,8 @@ examples = ['example.jpg']
 
 with gr.Blocks() as demo:
     with gr.Row():
-        draw_detect_enabled = gr.Checkbox(label="是否画框", value=False)
-        detect_threshold = gr.Slider(label="检测阈值", minimum=0, maximum=1, value=0.5)
+        draw_detect_enabled = gr.Checkbox(label="是否画框", value=True)
+        detect_threshold = gr.Slider(label="检测阈值", minimum=0, maximum=1, value=0.3)
         sim_threshold = gr.Slider(label="识别阈值", minimum=0, maximum=1, value=0.3)
     with gr.Row():
         with gr.Column():
