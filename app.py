@@ -2,6 +2,7 @@ import gradio as gr
 from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
 from modelscope.outputs import OutputKeys
+import numpy as np
 from PIL import Image
 import json
 import os
@@ -11,7 +12,9 @@ from util import *
 face_detector = pipeline(Tasks.face_detection, model='gaosheng/face_detect')
 # face_recognizer = pipeline(Tasks.face_recognition, model='damo/cv_ir101_facerecognition_cfglint')
 face_recognizer = pipeline(Tasks.face_recognition, model='iic/cv_ir101_facerecognition_cfglint')
+emotion_recognizer = pipeline(Tasks.facial_expression_recognition, 'damo/cv_vgg19_facial-expression-recognition_fer')
 face_bank = load_face_bank('face_bank/', face_recognizer)
+
 
 def inference(img: Image, draw_detect_enabled, detect_threshold, sim_threshold) -> json:
     img = resize_img(img)

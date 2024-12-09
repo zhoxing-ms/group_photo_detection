@@ -67,19 +67,36 @@ def get_name_sim(face_embedding, face_bank):
             name = face['name']
     return name, maxSim
 
+def get_emotion(img, emotion_recognizer):
+    ret = emotion_recognizer(img)
+
+    if not ret['labels'] or not ret['scores']:
+        return 'unknow'
+
+    label_idx = np.array(ret['scores']).argmax()
+    label = ret['labels'][label_idx]
+    return label
+
 def draw_face(img_draw, face, font):
     box = face['box']
     name = face['name']
     sim = face['sim']
 
     img_draw.text((box[0]-10, box[1]-20), name, fill=(0, 0, 255), font=font)
-    img_draw.rectangle([box[0], box[1], box[2], box[3]], outline ='red') 
+    img_draw.rectangle([box[0], box[1], box[2], box[3]], outline ='red')
 
-def draw_faces(image, faces):
-    font = ImageFont.truetype("Microsoft YaHei UI Bold.ttf", 10, encoding="unic")
+def draw_emotion(image, img_draw, face, font, emotion_recognizer):
+    box = face['box']
+    face_img = get_face_img(image, box)
+    emotion = get_emotion(face_img, emotion_recognizer)
+    img_draw.text((box[0]-5, box[1]-35), emotion, fill=(0, 255, 0), font=font)
+
+def draw_faces(image, faces, emotion_recognizer):
+    font = ImageFont.truetype("Microsoft YaHei UI Bold.ttf", 15, encoding="unic")
     draw = ImageDraw.Draw(image)
     for face in faces:
         draw_face(draw, face, font)
+        draw_emotion(image, draw, face, font, emotion_recognizer)
 
 def get_rows(faces):
     # 获取人脸检测框高度的平均值，作为DBSCAN算法的eps参数
