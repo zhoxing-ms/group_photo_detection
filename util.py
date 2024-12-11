@@ -4,6 +4,7 @@ import pickle
 from sklearn.cluster import DBSCAN
 import numpy as np
 import glob
+import speech_recognition as sr 
 
 def load_face_bank(face_folder, face_recognizer, use_cache=True):
     cache_path = 'facebank.cache'
@@ -176,3 +177,21 @@ def resize_img(img):
     w_new = int(img.width / ratio)
     h_new = int(img.height / ratio)
     return img.resize((w_new, h_new), resample=Image.BILINEAR)
+
+def speech_to_text(audio):  
+    # 实例化语音识别器  
+    recognizer = sr.Recognizer()  
+
+    # 将音频数据转换为AudioFile对象  
+    with sr.AudioFile(audio) as source:  
+        audio_data = recognizer.record(source)  
+          
+    try:  
+        # 使用Google Web Speech API将音频转换为文本  
+        text = recognizer.recognize_google(audio_data, language="zh-CN")  
+    except sr.UnknownValueError:  
+        text = "无法识别音频"  
+    except sr.RequestError:  
+        text = "语音识别服务不可用"  
+
+    return text
