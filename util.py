@@ -4,7 +4,8 @@ import pickle
 from sklearn.cluster import DBSCAN
 import numpy as np
 import glob
-import speech_recognition as sr 
+from pypinyin import lazy_pinyin
+import difflib
 
 def load_face_bank(face_folder, face_recognizer, use_cache=True):
     cache_path = 'facebank.cache'
@@ -178,20 +179,45 @@ def resize_img(img):
     h_new = int(img.height / ratio)
     return img.resize((w_new, h_new), resample=Image.BILINEAR)
 
-def speech_to_text(audio):  
-    # 实例化语音识别器  
-    recognizer = sr.Recognizer()  
+def recognize_speech_from_audio(audio_file, speech_recognizer):
+    rec_result = speech_recognizer(audio_file, lang="zh")
+    print("语音识别结果: " + rec_result[0]['text'])
+    return rec_result[0]['text']
 
-    # 将音频数据转换为AudioFile对象  
-    with sr.AudioFile(audio) as source:  
-        audio_data = recognizer.record(source)  
-          
-    try:  
-        # 使用Google Web Speech API将音频转换为文本  
-        text = recognizer.recognize_google(audio_data, language="zh-CN")  
-    except sr.UnknownValueError:  
-        text = "无法识别音频"  
-    except sr.RequestError:  
-        text = "语音识别服务不可用"  
+def load_name_pinyin_bank(face_folder, use_cache=True):
+    cache_path = 'name_pinyin_bank.cache'
+    if use_cache and os.path.exists(cache_path):
+        with open(cache_path, 'rb') as f:
+            return pickle.load(f)
+    bank = []
+    img_paths = glob.glob(os.path.join(face_folder, '**/**.**'))
+    # 遍历已知人脸图片
+    for img_path in img_paths:
+        dirStr, ext = os.path.splitext(img_path)
+        if ext not in ['.jpg', '.jpeg', '.png']:
+            continue
+        # 获取人名
+        name = dirStr.split(os.sep)[-1]
+        real_name = name[2:] # 去掉前2位学号
+        pinyin = lazy_pinyin(real_name)
+        bank.append({
+            "name": real_name,
+            "pinyin": pinyin
+        })
+    # 缓存特征库
+    with open(cache_path, 'wb') as f:
+        pickle.dump(bank, f)
+    return bank
 
-    return text
+def find_name_by_audio_text(audio_text, name_pinyin_bank):
+    audio_pinyin = lazy_pinyin(audio_text)
+    name = ''
+    maxSim = 0
+    for name_pinyin in name_pinyin_bank:
+        sim = difflib.SequenceMatcher(None, audio_pinyin, name_pinyin['pinyin']).ratio()
+        if sim > maxSim:
+            maxSim = sim
+            name = name_pinyin['name']
+    print("匹配的人名: " + name)
+    print("发音相似度: " + str(maxSim))
+    return name, maxSim
